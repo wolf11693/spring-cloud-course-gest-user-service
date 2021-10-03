@@ -1,4 +1,4 @@
-package com.xantrix.webapp.tests;
+package com.xantrix.webapp.test;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 import com.xantrix.webapp.Application;
-import com.xantrix.webapp.repository.UtentiRepository;
+import com.xantrix.webapp.repository.UserRepository;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class UtentiControllerTest
 	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private UtentiRepository utentiRepository;
+	private UserRepository utentiRepository;
 
 
 	@Autowired
