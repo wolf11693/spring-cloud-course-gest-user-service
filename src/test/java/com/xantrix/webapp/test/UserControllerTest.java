@@ -143,7 +143,7 @@ public class UserControllerTest {
 	@Test
 	@Order(4)
 	public void testGetAllUser() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/user/")
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/user")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(2)))

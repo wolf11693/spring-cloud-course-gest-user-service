@@ -34,7 +34,7 @@ public class UserController {
 	@Autowired
 	private UsersResourceTransformer usersResourceTranformer;
 
-	@GetMapping(path = "/")
+	@GetMapping
 	public ResponseEntity<ResponseBody<UsersResource>> getUsers() {
 		LOG.info("** GET api/user/ - getUsers - START **");
 		List<User> usersFetched = this.userService.getAll();
