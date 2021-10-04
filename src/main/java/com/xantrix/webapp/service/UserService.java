@@ -2,7 +2,7 @@ package com.xantrix.webapp.service;
 
 import java.util.List;
 
-import com.xantrix.webapp.entity.User;
+import com.xantrix.webapp.model.User;
 
 public interface UserService {
 
@@ -16,7 +16,9 @@ public interface UserService {
 	
 	public List<User> getByRole(String role);
 	
-	public User createNew(User user);
+	public User save(User user);
 	
 	public void update(String userIdToUpd, User user);
+	
+	public void delete(String idUserToDel) throws Exception;
 }

@@ -2,7 +2,7 @@ package com.xantrix.webapp.resource.transformer;
 
 import org.springframework.stereotype.Component;
 
-import com.xantrix.webapp.entity.User;
+import com.xantrix.webapp.model.User;
 import com.xantrix.webapp.resource.UserResource;
 
 @Component

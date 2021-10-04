@@ -1,4 +1,4 @@
-package com.xantrix.webapp.entity;
+package com.xantrix.webapp.model;
 
 import java.io.Serializable;
 import java.util.List;

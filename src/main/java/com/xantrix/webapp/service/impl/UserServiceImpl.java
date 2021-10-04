@@ -7,7 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.xantrix.webapp.entity.User;
+import com.xantrix.webapp.exception.DeleteUserException;
+import com.xantrix.webapp.model.User;
 import com.xantrix.webapp.repository.UserRepository;
 import com.xantrix.webapp.service.UserService;
 
@@ -55,15 +56,41 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User createNew(User user) {
-		// TODO Auto-generated method stub
-		return null;
+	public User save(User user) {
+		LOG.info("** save - START - user={}**", user);
+		User userSaved = this.UserRepository.save(user);
+		LOG.info("** save - END **");
+	
+		return userSaved;
 	}
 
 	@Override
 	public void update(String userIdToUpd, User user) {
-		// TODO Auto-generated method stub
+		LOG.info("** update - START - user={}**", user);
+		// TODO
+		LOG.info("** update - END **");
+	}
+
+
+	@Override
+	public void delete(String idUserToDel) throws Exception {
+		User userToDel = this.getById(idUserToDel);
+		if(userToDel == null) {
+			throw new Exception("cannot find user with id: '" + idUserToDel + "'. Maybe not exists");
+		}
 		
+		try {
+			this.delete(userToDel);
+		} catch (Exception e) {
+			LOG.error("delete user={} failed", userToDel);
+			throw new DeleteUserException("delete user failed");
+		}
+	}
+	
+	private void delete(User user) {
+		LOG.info("** delete - START - user={}**", user);
+		this.UserRepository.delete(user);
+		LOG.info("** delete - END **");
 	}
 
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.xantrix.webapp.entity.User;
+import com.xantrix.webapp.model.User;
 import com.xantrix.webapp.resource.UsersResource;
 
 @Component

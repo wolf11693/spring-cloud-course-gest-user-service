@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 import com.xantrix.webapp.Application;
-import com.xantrix.webapp.entity.User;
+import com.xantrix.webapp.model.User;
 import com.xantrix.webapp.repository.UserRepository;
 
 
