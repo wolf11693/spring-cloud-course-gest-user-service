@@ -10,8 +10,6 @@ public interface UserService {
 	
 	public User getById(String id);
 	
-	public User getByUserId(String userId);
-	
 	public User getByUsername(String username);
 	
 	public User getByUsernameAndPassword(String username, String password);

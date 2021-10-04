@@ -20,7 +20,7 @@ public class User implements Serializable {
 	@Indexed(unique = true)
 	@Size(min = 5, max = 80, message = "{Size.Utenti.userId.Validation}")
 	@NotNull(message = "{NotNull.Articoli.userId.Validation}")
-	private String userId;
+	private String username;
 
 	@Size(min = 8, max = 80, message = "{Size.Utenti.password.Validation}")
 	private String password;
@@ -33,40 +33,45 @@ public class User implements Serializable {
 		return id;
 	}
 
-	public void setId(String id) {
+	public User setId(String id) {
 		this.id = id;
+		return this;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public User setUsername(String username) {
+		this.username = username;
+		return this;
 	}
 
 	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public User setPassword(String password) {
 		this.password = password;
+		return this;
 	}
 
 	public String getAttivo() {
 		return attivo;
 	}
 
-	public void setAttivo(String attivo) {
+	public User setAttivo(String attivo) {
 		this.attivo = attivo;
+		return this;
 	}
 
 	public List<String> getRuoli() {
 		return ruoli;
 	}
 
-	public void setRuoli(List<String> ruoli) {
+	public User setRuoli(List<String> ruoli) {
 		this.ruoli = ruoli;
+		return this;
 	}
 
 	@Override
@@ -74,8 +79,8 @@ public class User implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("User [id=");
 		builder.append(id);
-		builder.append(", userId=");
-		builder.append(userId);
+		builder.append(", username=");
+		builder.append(username);
 		builder.append(", password=");
 		builder.append(password);
 		builder.append(", attivo=");

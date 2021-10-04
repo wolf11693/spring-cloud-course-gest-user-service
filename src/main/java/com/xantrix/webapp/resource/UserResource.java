@@ -10,8 +10,8 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 public class UserResource implements Serializable, Resource {
 	private static final long serialVersionUID = 793131449686916448L;
 
-	@JsonProperty(value = "id")
-	private String userId;
+	@JsonProperty(value = "username")
+	private String username;
 
 	@JsonProperty(value = "attivo")
 	private String attivo;
@@ -19,12 +19,12 @@ public class UserResource implements Serializable, Resource {
 	@JsonProperty(value = "ruoli")
 	private List<String> ruoli;
 
-	public String getUserId() {
-		return userId;
+	public String getUsername() {
+		return username;
 	}
 
-	public UserResource setUserId(String userId) {
-		this.userId = userId;
+	public UserResource setUsername(String username) {
+		this.username = username;
 		return this;
 	}
 
@@ -49,8 +49,8 @@ public class UserResource implements Serializable, Resource {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserResource [userId=");
-		builder.append(userId);
+		builder.append("UserResource [username=");
+		builder.append(username);
 		builder.append(", attivo=");
 		builder.append(attivo);
 		builder.append(", ruoli=");

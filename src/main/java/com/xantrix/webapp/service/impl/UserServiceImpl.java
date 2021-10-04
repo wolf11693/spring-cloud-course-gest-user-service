@@ -35,17 +35,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getByUserId(String userId) {
-		LOG.info("** getByUserId - START - userId={} **", userId);
-		User user = this.UserRepository.findByUserId(userId);
-		LOG.info("** getByUserId - END **");
-		return user;
-	}
-
-	@Override
 	public User getByUsername(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		LOG.info("** getByUsername - START - userId={} **", username);
+		User user = this.UserRepository.findByUsername(username);
+		LOG.info("** getByUsername - END **");
+		return user;
 	}
 
 	@Override

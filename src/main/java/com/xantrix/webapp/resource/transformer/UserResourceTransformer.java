@@ -17,7 +17,7 @@ public class UserResourceTransformer implements ResourceTransfromer<UserResource
 		UserResource userResource = new UserResource();
 
 		userResource
-			.setUserId(userModel.getUserId())
+			.setUsername(userModel.getUsername())
 			.setAttivo(userModel.getAttivo())
 			.setRuoli(userModel.getRuoli());
 

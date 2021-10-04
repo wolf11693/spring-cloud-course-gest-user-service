@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 import com.xantrix.webapp.Application;
+import com.xantrix.webapp.entity.User;
 import com.xantrix.webapp.repository.UserRepository;
 
 
@@ -35,27 +36,23 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = Application.class)
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
-public class UserControllerTest 
-{
-    private MockMvc mockMvc;
-	
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
-	
-	@Autowired
-	private UserRepository utentiRepository;
-
-
+public class UserControllerTest {
 	@Autowired
 	private WebApplicationContext wac;
-	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	@Autowired
+	private UserRepository userRepository;
+
+    private MockMvc mockMvc;
+
 	@BeforeEach
 	public void setup() throws JSONException, IOException{
 		DefaultMockMvcBuilder webAppContextSetup = MockMvcBuilders.webAppContextSetup(wac);
-		mockMvc = webAppContextSetup.build();	
+		this.mockMvc = webAppContextSetup.build();	
 	}
 	
-	String JsonData =  
+	String jsonData =  
 			"{\n" + 
 			"    \"userId\": \"Nicola\",\n" + 
 			"    \"password\": \"123Stella\",\n" + 
@@ -68,9 +65,9 @@ public class UserControllerTest
 	@Test
 	@Order(1)
 	public void testInsUtente1() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/utenti/inserisci")
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/user/")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(JsonData)
+				.content(jsonData)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated())
 				.andDo(print());
@@ -79,14 +76,14 @@ public class UserControllerTest
 	@Test
 	@Order(2)
 	public void testListUserByUserId() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/utenti/cerca/userid/Nicola")
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/user/Nicola")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				  
 				.andExpect(jsonPath("$.id").exists())
-				.andExpect(jsonPath("$.userId").exists())
-				.andExpect(jsonPath("$.userId").value("Nicola"))
+				.andExpect(jsonPath("$.username").exists())
+				.andExpect(jsonPath("$.username").value("Nicola"))
 				.andExpect(jsonPath("$.password").exists())
 				.andExpect(jsonPath("$.attivo").exists())
 				.andExpect(jsonPath("$.attivo").value("Si"))
@@ -95,12 +92,12 @@ public class UserControllerTest
 				.andExpect(jsonPath("$.ruoli[0]").value("USER")) 
 				.andDo(print());
 		
-				assertThat(passwordEncoder.matches("123Stella", 
-						utentiRepository.findByUserId("Nicola").getPassword()))
-				.isEqualTo(true);
+				User userFetched = userRepository.findByUsername("Nicola");
+				assertThat( passwordEncoder.matches("123Stella", userFetched.getPassword()))
+					.isEqualTo(Boolean.TRUE);
 	}
 	
-	String JsonData2 = 
+	String jsonData2 = 
 			"{\n" + 
 			"    \"userId\": \"Admin\",\n" + 
 			"    \"password\": \"VerySecretPwd\",\n" + 
@@ -114,15 +111,15 @@ public class UserControllerTest
 	@Test
 	@Order(3)
 	public void testInsUtente2() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/utenti/inserisci")
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/user")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(JsonData2)
+				.content(jsonData2)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated())
 				.andDo(print());
 	}
 	
-	String JsonDataUsers = 
+	String jsonDataUsers = 
 			"[\n" + 
 			"	{\n" + 
 			"	    \"userId\": \"Nicola\",\n" + 
@@ -146,15 +143,15 @@ public class UserControllerTest
 	@Test
 	@Order(4)
 	public void testGetAllUser() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/utenti/cerca/tutti")
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/user/")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(2)))
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				 //UTENTE 1
 				.andExpect(jsonPath("$[0].id").exists())
-				.andExpect(jsonPath("$[0].userId").exists())
-				.andExpect(jsonPath("$[0].userId").value("Nicola"))
+				.andExpect(jsonPath("$[0].username").exists())
+				.andExpect(jsonPath("$[0].username").value("Nicola"))
 				.andExpect(jsonPath("$[0].password").exists())
 				.andExpect(jsonPath("$[0].attivo").exists())
 				.andExpect(jsonPath("$[0].attivo").value("Si"))
@@ -162,8 +159,8 @@ public class UserControllerTest
 				.andExpect(jsonPath("$[0].ruoli[0]").value("USER")) 
 				 //UTENTE 2
 				.andExpect(jsonPath("$[1].id").exists())
-				.andExpect(jsonPath("$[1].userId").exists())
-				.andExpect(jsonPath("$[1].userId").value("Admin"))
+				.andExpect(jsonPath("$[1].username").exists())
+				.andExpect(jsonPath("$[1].username").value("Admin"))
 				.andExpect(jsonPath("$[1].password").exists())
 				.andExpect(jsonPath("$[1].attivo").exists())
 				.andExpect(jsonPath("$[1].attivo").value("Si"))
@@ -173,17 +170,15 @@ public class UserControllerTest
 				.andExpect(jsonPath("$[1].ruoli[1]").value("ADMIN")) 
 				.andReturn();
 		
-				assertThat(passwordEncoder.matches("VerySecretPwd", 
-						utentiRepository.findByUserId("Admin").getPassword()))
-				.isEqualTo(true);
+				User userFetched = userRepository.findByUsername("Admin");
+				assertThat(passwordEncoder.matches("VerySecretPwd", userFetched.getPassword()))
+					.isEqualTo(Boolean.TRUE);
 	}
-	
-	
 	
 	@Test
 	@Order(5)
 	public void testDelUtente1() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/utenti/elimina/Nicola")
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/Nicola")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.code").value("200 OK"))
@@ -194,12 +189,11 @@ public class UserControllerTest
 	@Test
 	@Order(6)
 	public void testDelUtente2() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/utenti/elimina/Admin")
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/Admin")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.code").value("200 OK"))
 				.andExpect(jsonPath("$.message").value("Eliminazione Utente Admin Eseguita Con Successo"))
 				.andDo(print());
 	}
-	
 }
