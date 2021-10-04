@@ -28,13 +28,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
  
 @ContextConfiguration(classes = Application.class)
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
-public class UtentiControllerTest 
+public class UserControllerTest 
 {
     private MockMvc mockMvc;
 	
@@ -49,11 +50,9 @@ public class UtentiControllerTest
 	private WebApplicationContext wac;
 	
 	@BeforeEach
-	public void setup() throws JSONException, IOException
-	{
-		mockMvc = MockMvcBuilders
-				.webAppContextSetup(wac)
-				.build();	
+	public void setup() throws JSONException, IOException{
+		DefaultMockMvcBuilder webAppContextSetup = MockMvcBuilders.webAppContextSetup(wac);
+		mockMvc = webAppContextSetup.build();	
 	}
 	
 	String JsonData =  
@@ -68,8 +67,7 @@ public class UtentiControllerTest
 	
 	@Test
 	@Order(1)
-	public void testInsUtente1() throws Exception
-	{
+	public void testInsUtente1() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/utenti/inserisci")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(JsonData)
@@ -80,8 +78,7 @@ public class UtentiControllerTest
 
 	@Test
 	@Order(2)
-	public void testListUserByUserId() throws Exception
-	{
+	public void testListUserByUserId() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/utenti/cerca/userid/Nicola")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -116,8 +113,7 @@ public class UtentiControllerTest
 	
 	@Test
 	@Order(3)
-	public void testInsUtente2() throws Exception
-	{
+	public void testInsUtente2() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/utenti/inserisci")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(JsonData2)
@@ -149,8 +145,7 @@ public class UtentiControllerTest
 	
 	@Test
 	@Order(4)
-	public void testGetAllUser() throws Exception
-	{
+	public void testGetAllUser() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/utenti/cerca/tutti")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -187,8 +182,7 @@ public class UtentiControllerTest
 	
 	@Test
 	@Order(5)
-	public void testDelUtente1() throws Exception
-	{
+	public void testDelUtente1() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.delete("/api/utenti/elimina/Nicola")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -199,8 +193,7 @@ public class UtentiControllerTest
 	
 	@Test
 	@Order(6)
-	public void testDelUtente2() throws Exception
-	{
+	public void testDelUtente2() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.delete("/api/utenti/elimina/Admin")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -210,5 +203,3 @@ public class UtentiControllerTest
 	}
 	
 }
-
-
