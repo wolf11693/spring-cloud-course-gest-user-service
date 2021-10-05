@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xantrix.webapp.dto.UserInputDto;
+import com.xantrix.webapp.exception.SaveException;
 import com.xantrix.webapp.model.User;
 import com.xantrix.webapp.model.transformer.UserModelTransformer;
 import com.xantrix.webapp.resource.UserResource;
@@ -64,7 +65,7 @@ public class UserController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<ResponseBody<UserResource>> insertUser(final UserInputDto userDto) {
+	public ResponseEntity<ResponseBody<UserResource>> insertUser(final UserInputDto userDto) throws Exception {
 		LOG.info("** POST api/user - insertUser - userDto={} - START **",  userDto);
 		User userModel = this.userModelTranformer.getModelByDto(userDto);
 		User userSaved = this.userService.save(userModel);
