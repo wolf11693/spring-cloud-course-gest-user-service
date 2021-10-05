@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.xantrix.webapp.exception.DeleteException;
+import com.xantrix.webapp.exception.SaveException;
 import com.xantrix.webapp.exception.UpdateException;
 import com.xantrix.webapp.model.User;
 import com.xantrix.webapp.repository.UserRepository;
@@ -94,12 +95,19 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User save(User user) {
+	public User save(User user) throws SaveException {
 		LOG.info("** save - START - user={}* *", user);
 		if(user == null) {
-			return null;
+			throw new SaveException("cannot save null object");
 		}
-		User userSaved = this.userRepository.save(user);
+		
+		User userSaved = null;
+		try {
+			userSaved = this.userRepository.save(user);
+		} catch (Exception ex) {
+			LOG.error("save user={} failed", user);
+			throw new SaveException("save user failed");
+		}
 		LOG.info("** save - END **");
 	
 		return userSaved;
