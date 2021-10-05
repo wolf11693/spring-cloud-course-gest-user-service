@@ -18,7 +18,7 @@ public interface UserService {
 	
 	public User save(User user);
 	
-	public void update(String userIdToUpd, User user);
+	public void update(String userIdToUpd, User user) throws Exception;
 	
 	public void delete(String idUserToDel) throws Exception;
 }

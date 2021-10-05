@@ -6,8 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.xantrix.webapp.exception.DeleteUserException;
+import com.xantrix.webapp.exception.UpdateUserException;
 import com.xantrix.webapp.model.User;
 import com.xantrix.webapp.repository.UserRepository;
 import com.xantrix.webapp.service.UserService;
@@ -17,12 +19,12 @@ public class UserServiceImpl implements UserService {
 	private static Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	@Autowired
-	private UserRepository UserRepository;
+	private UserRepository userRepository;
 	
 	@Override
 	public List<User> getAll() {
 		LOG.info("** getAll - START **");
-		List<User> users = this.UserRepository.findAll();
+		List<User> users = this.userRepository.findAll();
 		LOG.info("** getAll - END **");
 		return users;
 	}
@@ -30,53 +32,87 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getById(String id) {
 		LOG.info("** getById - START  id={} **", id);
-		User user = this.UserRepository.findById(id).get();
+		if(id == null || StringUtils.trimAllWhitespace(id).isEmpty()) {
+			return null;
+		}
+		User user = this.userRepository.findById(id).get();
 		LOG.info("** getById - END **");
 		return user;
 	}
 
 	@Override
 	public User getByUsername(String username) {
-		LOG.info("** getByUsername - START - userId={} **", username);
-		User user = this.UserRepository.findByUsername(username);
+		LOG.info("** getByUsername - START - username={} **", username);
+		if(username == null || StringUtils.trimAllWhitespace(username).isEmpty()) {
+			return null;
+		}
+		User user = this.userRepository.findByUsername(username);
 		LOG.info("** getByUsername - END **");
 		return user;
 	}
 
 	@Override
 	public User getByUsernameAndPassword(String username, String password) {
-		// TODO Auto-generated method stub
+		LOG.info("** getByUsernameAndPassword - START - username={}, password={} **", username, password);
+		LOG.info("** getByUsernameAndPassword - END **");
 		return null;
 	}
 
 	@Override
 	public List<User> getByRole(String role) {
-		// TODO Auto-generated method stub
+		LOG.info("** getByRole - START - role={} **", role);
+		LOG.info("** getByRole - END **");
 		return null;
+	}
+	
+	@Override
+	public void update(String userIdToUpd, User userDataToUpd) throws Exception {
+		LOG.info("** update - START - userIdToUpd={}, userDataToUpd={} **", userIdToUpd, userDataToUpd);
+		if(userIdToUpd == null || StringUtils.trimAllWhitespace(userIdToUpd).isEmpty()) {
+			return ;
+		}
+		if(userDataToUpd == null) {
+			return ;
+		}
+		User userFetched = this.getById(userIdToUpd);
+		if(userFetched == null) {
+			throw new Exception("cannot update user with id: '" + userIdToUpd + "'. Maybe not exists");
+		}
+		userFetched.setUsername(userDataToUpd.getUsername() != null? userDataToUpd.getUsername(): userFetched.getUsername());
+		userFetched.setPassword(userDataToUpd.getPassword() != null? userDataToUpd.getPassword(): userFetched.getPassword());
+		userFetched.setRuoli(userDataToUpd.getRuoli() != null? userDataToUpd.getRuoli(): userFetched.getRuoli());
+		userFetched.setAttivo(userDataToUpd.getAttivo() != null? userDataToUpd.getAttivo(): userFetched.getAttivo());
+
+		try {
+			this.save(userFetched);
+		} catch (Exception e) {
+			LOG.error("update user={} failed", userFetched);
+			throw new UpdateUserException("update user failed");
+		}
+		LOG.info("** update - END **");
 	}
 
 	@Override
 	public User save(User user) {
-		LOG.info("** save - START - user={}**", user);
-		User userSaved = this.UserRepository.save(user);
+		LOG.info("** save - START - user={}* *", user);
+		if(user == null) {
+			return null;
+		}
+		User userSaved = this.userRepository.save(user);
 		LOG.info("** save - END **");
 	
 		return userSaved;
 	}
-
-	@Override
-	public void update(String userIdToUpd, User user) {
-		LOG.info("** update - START - user={}**", user);
-		// TODO
-		LOG.info("** update - END **");
-	}
-
-
+	
 	@Override
 	public void delete(String idUserToDel) throws Exception {
+		if(idUserToDel == null || StringUtils.trimAllWhitespace(idUserToDel).isEmpty()) {
+			throw new DeleteUserException("id user to delete is null or empty string");
+		}
+
 		User userToDel = this.getById(idUserToDel);
 		if(userToDel == null) {
-			throw new Exception("cannot find user with id: '" + idUserToDel + "'. Maybe not exists");
+			throw new Exception("cannot delete user with id: '" + idUserToDel + "'. Maybe not exists");
 		}
 		
 		try {
@@ -89,8 +125,10 @@ public class UserServiceImpl implements UserService {
 	
 	private void delete(User user) {
 		LOG.info("** delete - START - user={}**", user);
-		this.UserRepository.delete(user);
+		if(user == null) {
+			return ;
+		}
+		this.userRepository.delete(user);
 		LOG.info("** delete - END **");
 	}
-
 }
