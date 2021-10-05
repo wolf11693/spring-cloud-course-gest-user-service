@@ -2,6 +2,8 @@ package com.xantrix.webapp.service;
 
 import java.util.List;
 
+import com.xantrix.webapp.exception.DeleteException;
+import com.xantrix.webapp.exception.UpdateException;
 import com.xantrix.webapp.model.User;
 
 public interface UserService {
@@ -18,7 +20,7 @@ public interface UserService {
 	
 	public User save(User user);
 	
-	public void update(String userIdToUpd, User user) throws Exception;
+	public void update(String userIdToUpd, User user) throws UpdateException;
 	
-	public void delete(String idUserToDel) throws Exception;
+	public void delete(String idUserToDel) throws DeleteException;
 }

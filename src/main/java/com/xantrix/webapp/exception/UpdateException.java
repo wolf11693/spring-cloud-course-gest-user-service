@@ -1,9 +1,9 @@
 package com.xantrix.webapp.exception;
 
-public class UpdateUserException extends Exception {
+public class UpdateException extends Exception {
 	private static final long serialVersionUID = -1343514881622611285L;
 
-	public UpdateUserException(String message) {
+	public UpdateException(String message) {
 		super(message);
 	}
 

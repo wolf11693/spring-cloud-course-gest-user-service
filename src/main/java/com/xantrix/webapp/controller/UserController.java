@@ -64,13 +64,13 @@ public class UserController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<ResponseBody<UserResource>> saveUser(final UserInputDto userDto) {
-		LOG.info("** POST api/user - saveUser - userDto={} - START **",  userDto);
+	public ResponseEntity<ResponseBody<UserResource>> insertUser(final UserInputDto userDto) {
+		LOG.info("** POST api/user - insertUser - userDto={} - START **",  userDto);
 		User userModel = this.userModelTranformer.getModelByDto(userDto);
 		User userSaved = this.userService.save(userModel);
 		UserResource userResource = this.userResourceTranformer.getResourceByModel(userSaved);
 		ResponseBody<UserResource> responseBody = new ResponseBody<UserResource>(userResource);
-		LOG.info("** POST api/user - saveUser - END **");
+		LOG.info("** POST api/user - insertUser - END **");
 
 		return new ResponseEntity<ResponseBody<UserResource>>(responseBody, HttpStatus.OK);
 	}

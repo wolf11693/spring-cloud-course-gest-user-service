@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.xantrix.webapp.exception.DeleteUserException;
-import com.xantrix.webapp.exception.UpdateUserException;
+import com.xantrix.webapp.exception.DeleteException;
+import com.xantrix.webapp.exception.UpdateException;
 import com.xantrix.webapp.model.User;
 import com.xantrix.webapp.repository.UserRepository;
 import com.xantrix.webapp.service.UserService;
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void update(String userIdToUpd, User userDataToUpd) throws Exception {
+	public void update(String userIdToUpd, User userDataToUpd) throws UpdateException {
 		LOG.info("** update - START - userIdToUpd={}, userDataToUpd={} **", userIdToUpd, userDataToUpd);
 		if(userIdToUpd == null || StringUtils.trimAllWhitespace(userIdToUpd).isEmpty()) {
 			return ;
@@ -74,9 +74,10 @@ public class UserServiceImpl implements UserService {
 		if(userDataToUpd == null) {
 			return ;
 		}
+		
 		User userFetched = this.getById(userIdToUpd);
 		if(userFetched == null) {
-			throw new Exception("cannot update user with id: '" + userIdToUpd + "'. Maybe not exists");
+			throw new UpdateException("cannot update user with id: '" + userIdToUpd + "'. Maybe not exists");
 		}
 		userFetched.setUsername(userDataToUpd.getUsername() != null? userDataToUpd.getUsername(): userFetched.getUsername());
 		userFetched.setPassword(userDataToUpd.getPassword() != null? userDataToUpd.getPassword(): userFetched.getPassword());
@@ -87,7 +88,7 @@ public class UserServiceImpl implements UserService {
 			this.save(userFetched);
 		} catch (Exception e) {
 			LOG.error("update user={} failed", userFetched);
-			throw new UpdateUserException("update user failed");
+			throw new UpdateException("update user failed");
 		}
 		LOG.info("** update - END **");
 	}
@@ -105,21 +106,21 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void delete(String idUserToDel) throws Exception {
+	public void delete(String idUserToDel) throws DeleteException {
 		if(idUserToDel == null || StringUtils.trimAllWhitespace(idUserToDel).isEmpty()) {
-			throw new DeleteUserException("id user to delete is null or empty string");
+			throw new DeleteException("id user to delete is null or empty string");
 		}
 
 		User userToDel = this.getById(idUserToDel);
 		if(userToDel == null) {
-			throw new Exception("cannot delete user with id: '" + idUserToDel + "'. Maybe not exists");
+			throw new DeleteException("cannot delete user with id: '" + idUserToDel + "'. Maybe not exists");
 		}
 		
 		try {
 			this.delete(userToDel);
 		} catch (Exception e) {
 			LOG.error("delete user={} failed", userToDel);
-			throw new DeleteUserException("delete user failed");
+			throw new DeleteException("delete user failed");
 		}
 	}
 	
