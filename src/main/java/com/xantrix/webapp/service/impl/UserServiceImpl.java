@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.xantrix.webapp.exception.DeleteException;
-import com.xantrix.webapp.exception.SaveException;
-import com.xantrix.webapp.exception.UpdateException;
 import com.xantrix.webapp.model.User;
 import com.xantrix.webapp.repository.UserRepository;
 import com.xantrix.webapp.service.UserService;
+import com.xantrix.webapp.service.exception.DeleteException;
+import com.xantrix.webapp.service.exception.SaveException;
+import com.xantrix.webapp.service.exception.UpdateException;
 
 @Service
 public class UserServiceImpl implements UserService {
